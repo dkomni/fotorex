@@ -1,0 +1,23 @@
+{
+  "name": "fotorex",
+  "version": "0.1.0",
+  "description": "Password-protected photo/video gallery on Cloudflare Pages + R2",
+  "type": "module",
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "scripts": {
+    "dev": "wrangler dev",
+    "deploy": "wrangler deploy",
+    "publish": "wrangler publish"
+  },
+  "devDependencies": {
+    "wrangler": "^3.0.0"
+  },
+  "keywords": [
+    "cloudflare",
+    "pages",
+    "gallery",
+    "r2"
+  ]
+}

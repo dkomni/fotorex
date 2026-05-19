@@ -1,0 +1,12 @@
+name = "fotorex"
+main = "functions"
+compatibility_date = "2025-05-19"
+
+[[r2_buckets]]
+binding = "MEDIA_BUCKET"
+bucket_name = "fotorex-media"
+
+[env.production]
+routes = [
+  { pattern = "fotorex.workers.dev", zone_name = "fotorex.com" }
+]

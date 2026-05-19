@@ -1,0 +1,23 @@
+name: CI
+
+on:
+  pull_request:
+    branches: [main]
+
+jobs:
+  checks:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Placeholder for linting/tests
+        run: echo "Add linting and tests here"
+
+  require-review:
+    runs-on: ubuntu-latest
+    if: github.event.pull_request.base.ref == 'main'
+    steps:
+      - name: Enforce review requirement
+        run: |
+          echo "Pull requests to main require at least one approval before merge."
+          echo "Configure branch protection rules in Settings → Branches → main"
