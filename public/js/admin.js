@@ -48,11 +48,11 @@ function getPassword() {
 function renderLogin() {
   app.innerHTML = `
     <section class="auth-box">
-      <h1>Sign in</h1>
+      <h1>Σύνδεση</h1>
       <form id="login-form">
-        <input type="password" name="pw" placeholder="Password" required autofocus autocomplete="current-password">
-        <button type="submit">Enter</button>
-        <p class="error" id="login-err" hidden>Incorrect password.</p>
+        <input type="password" name="pw" placeholder="Κωδικός" required autofocus autocomplete="current-password">
+        <button type="submit">Είσοδος</button>
+        <p class="error" id="login-err" hidden>Λάθος κωδικός.</p>
       </form>
     </section>
   `;
@@ -76,9 +76,9 @@ function renderLogin() {
 function renderAdmin() {
   app.innerHTML = `
     <nav class="tabs">
-      <button class="tab active" type="button" data-tab="upload">Upload</button>
-      <button class="tab" type="button" data-tab="manage">Manage</button>
-      <button class="logout" type="button" id="logout">Sign out</button>
+      <button class="tab active" type="button" data-tab="upload">Ανέβασμα</button>
+      <button class="tab" type="button" data-tab="manage">Διαχείριση</button>
+      <button class="logout" type="button" id="logout">Αποσύνδεση</button>
     </nav>
     <section id="tab-upload" class="tab-panel"></section>
     <section id="tab-manage" class="tab-panel" hidden></section>
@@ -117,17 +117,17 @@ async function fetchAlbums() {
 async function renderUploadPanel() {
   const panel = document.getElementById('tab-upload');
   panel.innerHTML = `
-    <h2>Upload</h2>
+    <h2>Ανέβασμα αρχείων</h2>
     <div class="form-row">
-      <label for="album-select">Album:</label>
-      <select id="album-select"><option>Loading…</option></select>
-      <input id="album-new" placeholder="New album name" hidden autocomplete="off">
-      <button type="button" id="toggle-new" class="link-btn">+ New album</button>
+      <label for="album-select">Συλλογή:</label>
+      <select id="album-select"><option>Φόρτωση…</option></select>
+      <input id="album-new" placeholder="Όνομα νέας συλλογής" hidden autocomplete="off">
+      <button type="button" id="toggle-new" class="link-btn">+ Νέα συλλογή</button>
     </div>
     <div id="drop" class="drop-zone" tabindex="0" role="button"
-         aria-label="Drop photos or videos, or click to browse">
-      <p><strong>Drop photos / videos here</strong></p>
-      <p class="muted">or click to choose files</p>
+         aria-label="Σύρετε φωτογραφίες ή βίντεο, ή κάντε κλικ για επιλογή">
+      <p><strong>Σύρετε φωτογραφίες / βίντεο εδώ</strong></p>
+      <p class="muted">ή κάντε κλικ για επιλογή αρχείων</p>
       <input type="file" id="file-input" multiple accept="image/*,video/*" hidden>
     </div>
     <ul id="upload-list" class="upload-list"></ul>
@@ -141,7 +141,7 @@ async function renderUploadPanel() {
   if (albums.length) {
     sel.innerHTML = albums.map((a) => `<option>${escapeHtml(a.name)}</option>`).join('');
   } else {
-    sel.innerHTML = '<option value="">(no albums yet)</option>';
+    sel.innerHTML = '<option value="">(καμία συλλογή ακόμα)</option>';
     sel.hidden = true;
     newInput.hidden = false;
   }
@@ -187,7 +187,7 @@ function getSelectedAlbum() {
 async function handleFiles(files) {
   const album = getSelectedAlbum();
   if (!album) {
-    alert('Please select or create an album first.');
+    alert('Επιλέξτε ή δημιουργήστε μια συλλογή πρώτα.');
     return;
   }
   const list = document.getElementById('upload-list');
@@ -197,17 +197,17 @@ async function handleFiles(files) {
     li.innerHTML = `
       <span class="up-name"></span>
       <progress max="100" value="0"></progress>
-      <span class="up-status">Pending</span>
+      <span class="up-status">Αναμονή</span>
     `;
     li.querySelector('.up-name').textContent = file.name;
     list.append(li);
     try {
       await uploadOne(file, album, li);
-      li.querySelector('.up-status').textContent = 'Done';
+      li.querySelector('.up-status').textContent = 'ΟΚ';
       li.classList.add('done');
     } catch (e) {
       console.error(e);
-      li.querySelector('.up-status').textContent = 'Error: ' + e.message;
+      li.querySelector('.up-status').textContent = 'Σφάλμα: ' + e.message;
       li.classList.add('error');
     }
   }
@@ -218,7 +218,7 @@ async function uploadOne(file, album, li) {
   const status = li.querySelector('.up-status');
   const isImage = file.type.startsWith('image/');
   const isVideo = file.type.startsWith('video/');
-  if (!isImage && !isVideo) throw new Error('Unsupported type');
+  if (!isImage && !isVideo) throw new Error('Μη υποστηριζόμενος τύπος');
 
   const ts = Date.now();
   const safeOriginalName = file.name.replace(SAFE_NAME, '-').replace(/-+/g, '-');
@@ -226,7 +226,7 @@ async function uploadOne(file, album, li) {
 
   // Thumbnail (images only).
   if (isImage) {
-    status.textContent = 'Thumbnail…';
+    status.textContent = 'Μικρογραφία…';
     try {
       const thumb = await makeThumbnail(file, THUMB_MAX);
       if (thumb) {
@@ -244,7 +244,7 @@ async function uploadOne(file, album, li) {
     }
   }
 
-  status.textContent = 'Uploading…';
+  status.textContent = 'Ανέβασμα…';
   await putFile({
     blob: file,
     contentType: file.type,
@@ -268,7 +268,7 @@ async function putFile({ blob, contentType, album, filename, kind, onProgress })
     });
     if (!res.ok) {
       const err = await safeJson(res);
-      throw new Error(err?.error || `Could not get presigned URL (${res.status})`);
+      throw new Error(err?.error || `Αδύνατη λήψη presigned URL (${res.status})`);
     }
     const { url } = await res.json();
     await xhrSend('PUT', url, blob, contentType, null, onProgress);
@@ -292,7 +292,7 @@ function xhrSend(method, url, blob, contentType, password, onProgress) {
       if (xhr.status >= 200 && xhr.status < 300) resolve();
       else reject(new Error(`HTTP ${xhr.status}`));
     };
-    xhr.onerror = () => reject(new Error('Network error'));
+    xhr.onerror = () => reject(new Error('Σφάλμα δικτύου'));
     xhr.send(blob);
   });
 }
@@ -342,12 +342,12 @@ function makeThumbnail(file, maxSize) {
 
 async function renderManagePanel() {
   const panel = document.getElementById('tab-manage');
-  panel.innerHTML = '<h2>Manage</h2><div id="albums-list"><p class="muted">Loading…</p></div>';
+  panel.innerHTML = '<h2>Διαχείριση συλλογών</h2><div id="albums-list"><p class="muted">Φόρτωση…</p></div>';
   const list = document.getElementById('albums-list');
   const albums = await fetchAlbums();
   list.innerHTML = '';
   if (!albums.length) {
-    list.innerHTML = '<p class="empty">No albums yet.</p>';
+    list.innerHTML = '<p class="empty">Δεν υπάρχουν συλλογές ακόμα.</p>';
     return;
   }
   for (const a of albums) {
@@ -356,9 +356,9 @@ async function renderManagePanel() {
     section.innerHTML = `
       <summary>
         <span class="album-name"></span>
-        <button class="danger" type="button" data-action="delete-album">Delete album</button>
+        <button class="danger" type="button" data-action="delete-album">Διαγραφή συλλογής</button>
       </summary>
-      <div class="album-items"><p class="muted">Loading…</p></div>
+      <div class="album-items"><p class="muted">Φόρτωση…</p></div>
     `;
     section.querySelector('.album-name').textContent = a.name;
     list.append(section);
@@ -366,11 +366,11 @@ async function renderManagePanel() {
     section.querySelector('button.danger').addEventListener('click', async (e) => {
       e.preventDefault();
       e.stopPropagation();
-      if (!confirm(`Delete the entire album "${a.name}" and ALL its media?\n\nThis cannot be undone.`)) return;
+      if (!confirm(`Να διαγραφεί η συλλογή «${a.name}» και ΌΛΑ τα αρχεία της;\n\nΗ ενέργεια δεν αναιρείται.`)) return;
       if (await deleteAlbum(a.name)) {
         section.remove();
       } else {
-        alert('Delete failed.');
+        alert('Η διαγραφή απέτυχε.');
       }
     });
 
@@ -383,7 +383,7 @@ async function renderManagePanel() {
       const data = r.ok ? await r.json() : { items: [] };
       itemsBox.innerHTML = '';
       if (!data.items?.length) {
-        itemsBox.innerHTML = '<p class="empty">Empty.</p>';
+        itemsBox.innerHTML = '<p class="empty">Κενή.</p>';
         return;
       }
       for (const item of data.items) {
@@ -415,11 +415,11 @@ async function renderManagePanel() {
         del.type = 'button';
         del.className = 'tile-delete';
         del.textContent = '×';
-        del.title = `Delete ${item.name}`;
+        del.title = `Διαγραφή ${item.name}`;
         del.addEventListener('click', async () => {
-          if (!confirm(`Delete ${item.name}?`)) return;
+          if (!confirm(`Να διαγραφεί το ${item.name};`)) return;
           if (await deleteKeys([item.key])) tile.remove();
-          else alert('Delete failed.');
+          else alert('Η διαγραφή απέτυχε.');
         });
         tile.append(del);
         itemsBox.append(tile);

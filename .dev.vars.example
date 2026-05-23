@@ -1,0 +1,11 @@
+# Template for .dev.vars (which is gitignored).
+# Copy this file to `.dev.vars` and adjust as needed:
+#   PowerShell:  Copy-Item .dev.vars.example .dev.vars
+#   bash:        cp .dev.vars.example .dev.vars
+#
+# See DEV_NOTES.md "Local testing" for full guidance.
+
+UPLOAD_PASSWORD=devpw
+R2_ACCOUNT_ID=local-account-id
+R2_ACCESS_KEY_ID=local-access-key-id
+R2_SECRET_ACCESS_KEY=local-secret-access-key
