@@ -1,12 +1,10 @@
 name = "fotorex"
-main = "functions"
 compatibility_date = "2025-05-19"
+pages_build_output_dir = "public"
 
+# R2 bucket binding for Pages Functions.
+# After creating the Pages project in the dashboard, this binding must also
+# be configured under Pages → Settings → Functions → R2 bindings.
 [[r2_buckets]]
 binding = "MEDIA_BUCKET"
 bucket_name = "fotorex-media"
-
-[env.production]
-routes = [
-  { pattern = "fotorex.workers.dev", zone_name = "fotorex.com" }
-]
