@@ -1,0 +1,146 @@
+/* ============================================================
+   ΦΩΤΟ REX — Design tokens
+   Edit this file to re-theme the whole site (colors, fonts,
+   spacing, radii, etc.). Every component in style.css consumes
+   these variables, so a one-line change cascades everywhere.
+   ============================================================ */
+
+:root {
+  /* ----- Palette (light & minimal) ----- */
+  --color-bg:          #FBF8F4;   /* warm cream page background      */
+  --color-surface:     #FFFFFF;   /* cards, raised areas              */
+  --color-surface-alt: #F3EFE8;   /* secondary surface / hover wash   */
+  --color-text:        #1F1B17;   /* near-black with warm undertone   */
+  --color-text-soft:   #3D362F;
+  --color-muted:       #6B6258;   /* secondary text                   */
+  --color-accent:      #B08968;   /* soft bronze — primary accent     */
+  --color-accent-dark: #8B6A50;
+  --color-accent-soft: #E6D6C5;
+  --color-border:      #E8E2D8;
+  --color-border-soft: #F0EBE2;
+  --color-danger:      #B23A2F;
+  --color-success:     #2E7D32;
+
+  /* Overlay for hero / lightbox */
+  --color-overlay:     rgba(31, 27, 23, 0.55);
+  --color-overlay-strong: rgba(0, 0, 0, 0.92);
+
+  /* ----- Typography -----
+     Headings: Cormorant Garamond (serif, elegant, has Greek subset).
+     Body:     Inter (sans, clean, has Greek subset).
+     If you self-host the WOFF2 files into /assets/fonts/, the
+     @font-face block below will pick them up. Otherwise the system
+     fallbacks render cleanly. README has download instructions. */
+  --font-heading: "Cormorant Garamond", "Cormorant", "Playfair Display",
+                  Georgia, "Times New Roman", serif;
+  --font-body:    "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI",
+                  Roboto, "Helvetica Neue", Arial, sans-serif;
+
+  /* Type scale (mobile-first; clamp() upscales on bigger screens) */
+  --fs-xs:       0.78rem;
+  --fs-sm:       0.875rem;
+  --fs-base:     1rem;
+  --fs-lg:       1.125rem;
+  --fs-xl:       1.375rem;
+  --fs-2xl:      1.75rem;
+  --fs-3xl:      clamp(2rem, 4vw, 2.75rem);
+  --fs-display:  clamp(2.5rem, 7vw, 4.5rem);
+
+  --lh-tight:    1.15;
+  --lh-snug:     1.3;
+  --lh-base:     1.55;
+  --lh-loose:    1.75;
+
+  --ls-tight:    -0.01em;
+  --ls-wide:     0.08em;
+  --ls-extra:    0.18em;   /* used for ALL-CAPS eyebrows */
+
+  /* ----- Spacing (8px scale) ----- */
+  --space-1:  0.25rem;
+  --space-2:  0.5rem;
+  --space-3:  0.75rem;
+  --space-4:  1rem;
+  --space-5:  1.5rem;
+  --space-6:  2rem;
+  --space-7:  3rem;
+  --space-8:  4rem;
+  --space-9:  6rem;
+  --space-10: 8rem;
+
+  /* ----- Layout ----- */
+  --container-max: 1200px;
+  --container-pad: clamp(1rem, 4vw, 2.5rem);
+  --header-height: 72px;
+
+  /* ----- Radii & shadows ----- */
+  --radius-sm: 4px;
+  --radius-md: 8px;
+  --radius-lg: 14px;
+  --radius-pill: 999px;
+
+  --shadow-sm: 0 1px 2px rgba(31, 27, 23, 0.05),
+               0 1px 3px rgba(31, 27, 23, 0.06);
+  --shadow-md: 0 4px 12px rgba(31, 27, 23, 0.08);
+  --shadow-lg: 0 12px 32px rgba(31, 27, 23, 0.14);
+
+  /* ----- Motion ----- */
+  --transition-fast: 150ms ease;
+  --transition:      220ms ease;
+  --transition-slow: 380ms ease;
+
+  /* ----- Grid breakpoints (used by JS sparingly; CSS uses @media) ----- */
+  --bp-sm:  640px;
+  --bp-md:  768px;
+  --bp-lg:  1024px;
+
+  /* ----- Grid item sizes ----- */
+  --tile-min:  180px;
+  --album-min: 260px;
+  --service-min: 280px;
+}
+
+/* ============================================================
+   @font-face — self-hosted Google Fonts (Greek + Latin subset).
+   Drop the WOFF2 files into /public/assets/fonts/ to activate.
+   Filenames expected:
+     inter-400.woff2, inter-500.woff2, inter-600.woff2
+     cormorant-400.woff2, cormorant-600.woff2
+   The site renders fine with system fallbacks if the files
+   aren't present yet — fonts are progressive enhancement.
+   ============================================================ */
+
+@font-face {
+  font-family: "Inter";
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url("/assets/fonts/inter-400.woff2") format("woff2");
+}
+@font-face {
+  font-family: "Inter";
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+  src: url("/assets/fonts/inter-500.woff2") format("woff2");
+}
+@font-face {
+  font-family: "Inter";
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+  src: url("/assets/fonts/inter-600.woff2") format("woff2");
+}
+@font-face {
+  font-family: "Cormorant Garamond";
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url("/assets/fonts/cormorant-400.woff2") format("woff2");
+}
+@font-face {
+  font-family: "Cormorant Garamond";
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+  src: url("/assets/fonts/cormorant-600.woff2") format("woff2");
+}

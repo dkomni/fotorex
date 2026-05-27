@@ -78,7 +78,14 @@ npx wrangler login        # one-time
 npm run dev               # http://localhost:8788
 ```
 
-For local dev, create a `.dev.vars` file in the repo root (ignored by git):
+For local dev, create a `.dev.vars` file in the repo root (ignored by git) —
+the easiest way is to copy the tracked template:
+
+```powershell
+Copy-Item .dev.vars.example .dev.vars
+```
+
+It contains the four variables Wrangler needs:
 
 ```
 UPLOAD_PASSWORD=devpassword
@@ -97,15 +104,31 @@ hit the real bucket. To test against the real bucket, deploy a Preview build.
 ```
 fotorex/
 ├── public/                     # Static site (served by Pages)
-│   ├── index.html              # Public album list
+│   ├── index.html              # Landing page (hero, services teaser, featured albums)
+│   ├── profile.html            # Studio profile
+│   ├── services.html           # 4-service detail page (#events / #weddings / #schools / #albums)
+│   ├── gallery.html            # Public album list
 │   ├── album.html              # Public album view
-│   ├── admin.html              # Password-protected admin UI
-│   ├── css/style.css
+│   ├── contact.html            # Address, phones, email, map
+│   ├── privacy.html            # Short privacy policy (no cookies, no tracking)
+│   ├── admin.html              # Password-protected admin UI (noindex)
+│   ├── partials/
+│   │   ├── header.html         # Brand + 5-tab nav + mobile hamburger
+│   │   └── footer.html         # 3-col footer with contact + admin lock icon
+│   ├── css/
+│   │   ├── tokens.css          # All design tokens (colors, type, spacing, @font-face)
+│   │   └── style.css           # Component styles consuming tokens
 │   ├── js/
+│   │   ├── partials.js         # Header/footer injector + nav highlighting
 │   │   ├── gallery.js          # Public list & grid rendering
 │   │   ├── lightbox.js         # Fullscreen viewer
 │   │   └── admin.js            # Auth, upload, manage/delete
-│   └── assets/placeholder.svg
+│   └── assets/
+│       ├── placeholder.svg
+│       ├── fonts/              # Self-hosted WOFF2 (see below)
+│       ├── profile/            # profile-portrait.jpg
+│       ├── services/           # events.jpg, weddings.jpg, schools.jpg, albums.jpg
+│       └── contact/            # map.jpg
 ├── functions/
 │   ├── _shared/
 │   │   ├── auth.js             # Constant-time password check
@@ -185,3 +208,61 @@ When you're ready to hand over the account:
 - **No delete UI for individual albums on the public site** — admin only.
 
 For client-facing instructions, see [CLIENT-GUIDE.md](CLIENT-GUIDE.md).
+
+---
+
+## Editing site content
+
+The site is intentionally a static HTML site with no CMS — copy and images are
+edited by hand. Every editable region in the page templates is marked with an
+`<!-- EDITABLE: ... -->` comment so you can find them quickly.
+
+### Adding photos
+
+Drop JPGs into these folders and the site picks them up automatically (the
+files don't need to exist — placeholders are shown when missing):
+
+| File                                       | Used by                | Recommended size |
+| ------------------------------------------ | ---------------------- | ---------------- |
+| `public/assets/profile/profile-portrait.jpg` | `/profile.html`      | 800 × 1000       |
+| `public/assets/services/events.jpg`        | `/services.html#events`   | 1200 × 900    |
+| `public/assets/services/weddings.jpg`      | `/services.html#weddings` | 1200 × 900    |
+| `public/assets/services/schools.jpg`       | `/services.html#schools`  | 1200 × 900    |
+| `public/assets/services/albums.jpg`        | `/services.html#albums`   | 1200 × 900    |
+| `public/assets/contact/map.jpg`            | `/contact.html`           | 1200 × 900    |
+
+For the contact map: open OpenStreetMap, navigate to the studio, click
+**Share → Image**, and export a PNG snapshot. Convert to JPG and save as
+`map.jpg`.
+
+### Self-hosting the fonts (optional but recommended)
+
+The CSS expects **Inter** (body) and **Cormorant Garamond** (headings) as
+self-hosted WOFF2 files. While they are missing, the site falls back to
+`system-ui` and `Georgia`, which still looks correct but less distinctive.
+
+To install them:
+
+1. Visit https://gwfh.mranftl.com/fonts (google-webfonts-helper).
+2. Download **Inter** (subsets: `latin`, `greek`; weights 400, 500, 600) as
+   "Modern Browsers" → WOFF2.
+3. Download **Cormorant Garamond** (subsets: `latin`, `greek`; weights 400, 600).
+4. Rename the files and drop into `public/assets/fonts/`:
+
+```
+public/assets/fonts/
+├── inter-400.woff2
+├── inter-500.woff2
+├── inter-600.woff2
+├── cormorant-400.woff2
+└── cormorant-600.woff2
+```
+
+No code change required — the `@font-face` declarations in
+`public/css/tokens.css` already reference these exact filenames.
+
+### Translation / Greek copy
+
+All UI text is in Greek. To tweak wording, search the HTML files for the
+relevant section (each has descriptive comments like `<!-- ============= HERO
+============= -->`) and edit the text directly.

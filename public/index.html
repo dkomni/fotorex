@@ -1,23 +1,136 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="el">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Fotorex — Gallery</title>
-  <meta name="description" content="Photo & video gallery">
-  <meta property="og:title" content="Fotorex">
+  <title>ΦΩΤΟ REX — Φωτογραφία &amp; Βιντεοσκόπηση | Συκούριο, Λάρισα</title>
+  <meta name="description" content="ΦΩΤΟ REX — Φωτογράφηση & βιντεοσκόπηση γάμων, βαπτίσεων, σχολικών γιορτών και εκδηλώσεων στη Λάρισα και ευρύτερα στη Θεσσαλία.">
+  <meta property="og:title" content="ΦΩΤΟ REX — Φωτογραφία & Βιντεοσκόπηση">
+  <meta property="og:description" content="Αποτυπώνουμε τις στιγμές που μένουν για πάντα.">
   <meta property="og:type" content="website">
   <link rel="icon" href="/assets/placeholder.svg" type="image/svg+xml">
   <link rel="stylesheet" href="/css/style.css">
 </head>
 <body>
-  <header class="site-header">
-    <a href="/" class="site-title">Fotorex</a>
-  </header>
-  <main id="app" class="container"></main>
-  <footer class="site-footer">
-    <small>&copy; Fotorex</small>
-  </footer>
-  <script src="/js/gallery.js" defer></script>
+  <header class="site-header" data-include="header"></header>
+
+  <main>
+
+    <!-- ===================== HERO ===================== -->
+    <section class="hero container">
+      <span class="eyebrow">Καλώς ήρθατε στη ΦΩΤΟ REX</span>
+      <!-- EDITABLE: hero headline -->
+      <h1>Στιγμές που <em>μένουν</em> για πάντα.</h1>
+      <!-- EDITABLE: hero subtitle / quote -->
+      <p class="lead">
+        Αποτυπώνουμε εικόνες και συναισθήματα που μιλούν στην καρδιά —
+        από τον γάμο και τη βάπτιση μέχρι κάθε σημαντική στιγμή της ζωής
+        και του επαγγέλματός σας. Με αφοσίωση, εμπειρία και μεράκι.
+      </p>
+      <div class="hero-actions">
+        <a class="btn btn-primary" href="/gallery.html">Δείτε τη Gallery</a>
+        <a class="btn btn-outline" href="/contact.html">Επικοινωνία</a>
+      </div>
+    </section>
+
+    <!-- ===================== SERVICES TEASER ===================== -->
+    <section class="section container">
+      <div class="section-head">
+        <span class="eyebrow">Τι κάνουμε</span>
+        <h2 class="section-title">Δημιουργία και Κάλυψη για κάθε περίσταση</h2>
+        <p>Επιλέξτε μια κατηγορία για να μάθετε περισσότερα.</p>
+      </div>
+
+      <div class="services-grid">
+        <a class="service-card-mini" href="/services.html#events">
+          <span class="num">01</span>
+          <h3>Εκδηλώσεις / Συναυλίες</h3>
+        </a>
+        <a class="service-card-mini" href="/services.html#weddings">
+          <span class="num">02</span>
+          <h3>Γάμοι / Βαπτίσεις</h3>
+        </a>
+        <a class="service-card-mini" href="/services.html#schools">
+          <span class="num">03</span>
+          <h3>Σχολικές Γιορτές / Εκδηλώσεις</h3>
+        </a>
+        <a class="service-card-mini" href="/services.html#albums">
+          <span class="num">04</span>
+          <h3>Άλμπουμ &amp; Ψηφιακό Υλικό</h3>
+        </a>
+      </div>
+    </section>
+
+    <!-- ===================== FEATURED ALBUMS ===================== -->
+    <section class="section container" id="featured">
+      <div class="section-head">
+        <span class="eyebrow">Δείγματα δουλειάς</span>
+        <h2 class="section-title">Πρόσφατες Συλλογές</h2>
+        <p>Μια ματιά σε ό,τι έχουμε αποτυπώσει τελευταία.</p>
+      </div>
+
+      <div class="featured-strip" id="featured-grid">
+        <p class="muted center">Φόρτωση…</p>
+      </div>
+
+      <p class="center" style="margin-top: var(--space-6);">
+        <a href="/gallery.html" class="link-arrow">Δείτε όλες τις συλλογές →</a>
+      </p>
+    </section>
+
+    <!-- ===================== CTA BANNER ===================== -->
+    <section class="container">
+      <div class="cta-banner">
+        <h2>Ας αποτυπώσουμε μαζί την επόμενη στιγμή σας.</h2>
+        <a href="/contact.html" class="btn btn-accent">Επικοινωνία</a>
+      </div>
+    </section>
+
+  </main>
+
+  <footer class="site-footer" data-include="footer"></footer>
+
+  <script src="/js/partials.js" defer></script>
+  <script>
+    // Featured-albums loader: shows the first 6 albums on the landing page.
+    (async () => {
+      const grid = document.getElementById('featured-grid');
+      if (!grid) return;
+      try {
+        const res = await fetch('/api/albums');
+        if (!res.ok) throw new Error('albums fetch failed');
+        const albums = await res.json();
+        grid.innerHTML = '';
+        const featured = albums.slice(0, 6);
+        if (!featured.length) {
+          grid.innerHTML = '<p class="empty">Δεν υπάρχουν συλλογές ακόμα.</p>';
+          return;
+        }
+        for (const a of featured) {
+          const card = document.createElement('a');
+          card.className = 'card';
+          card.href = `/album.html?album=${encodeURIComponent(a.name)}`;
+          const wrap = document.createElement('div');
+          wrap.className = 'card-img';
+          const img = document.createElement('img');
+          img.loading = 'lazy';
+          img.alt = a.name;
+          img.src = a.thumbnailKey
+            ? `/api/file?key=${encodeURIComponent(a.thumbnailKey)}`
+            : '/assets/placeholder.svg';
+          img.onerror = () => { img.src = '/assets/placeholder.svg'; };
+          wrap.append(img);
+          const label = document.createElement('div');
+          label.className = 'card-label';
+          label.textContent = a.name;
+          card.append(wrap, label);
+          grid.append(card);
+        }
+      } catch (err) {
+        console.error(err);
+        grid.innerHTML = '<p class="empty">Δεν ήταν δυνατή η φόρτωση των συλλογών.</p>';
+      }
+    })();
+  </script>
 </body>
 </html>

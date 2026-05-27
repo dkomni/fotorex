@@ -1,0 +1,24 @@
+<!-- Shared site header. Injected by /js/partials.js into <header data-include="header">.
+     The injector marks the current nav link with aria-current="page" by matching
+     location.pathname, and wires the mobile hamburger. -->
+<div class="site-header-inner container">
+  <a href="/" class="brand" aria-label="ΦΩΤΟ REX — Αρχική">ΦΩΤΟ REX</a>
+
+  <nav class="primary-nav" id="primary-nav" aria-label="Κύρια πλοήγηση">
+    <a href="/" data-path="/">Αρχική</a>
+    <a href="/profile.html" data-path="/profile.html">Προφίλ</a>
+    <a href="/services.html" data-path="/services.html">Υπηρεσίες</a>
+    <a href="/gallery.html" data-path="/gallery.html">Gallery</a>
+    <a href="/contact.html" data-path="/contact.html">Επικοινωνία</a>
+  </nav>
+
+  <button class="nav-toggle" id="nav-toggle" type="button"
+          aria-expanded="false" aria-controls="primary-nav" aria-label="Μενού">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+         stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+      <line x1="3" y1="6"  x2="21" y2="6"></line>
+      <line x1="3" y1="12" x2="21" y2="12"></line>
+      <line x1="3" y1="18" x2="21" y2="18"></line>
+    </svg>
+  </button>
+</div>

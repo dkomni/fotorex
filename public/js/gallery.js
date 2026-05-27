@@ -14,15 +14,16 @@
     }
   } catch (err) {
     console.error(err);
-    app.innerHTML = '<p class="error">Something went wrong loading the gallery.</p>';
+    app.innerHTML = '<p class="error">Παρουσιάστηκε σφάλμα κατά τη φόρτωση της συλλογής.</p>';
   }
 })();
 
 async function renderAlbumsList(app) {
+  // The surrounding page (gallery.html) renders the title in its <section class="page-header">,
+  // so we only render the grid here.
   app.innerHTML = `
-    <h1 class="page-title">Albums</h1>
     <div class="grid grid-albums" id="grid">
-      <p class="muted">Loading…</p>
+      <p class="muted">Φόρτωση…</p>
     </div>
   `;
   const grid = document.getElementById('grid');
@@ -31,7 +32,7 @@ async function renderAlbumsList(app) {
   const albums = await res.json();
   grid.innerHTML = '';
   if (!albums.length) {
-    grid.innerHTML = '<p class="empty">No albums yet.</p>';
+    grid.innerHTML = '<p class="empty">Δεν υπάρχουν συλλογές ακόμα.</p>';
     return;
   }
   for (const a of albums) {
@@ -57,12 +58,12 @@ async function renderAlbumsList(app) {
 }
 
 async function renderAlbum(app, album) {
-  document.title = `${album} — Fotorex`;
+  document.title = `${album} — ΦΩΤΟ REX`;
   app.innerHTML = `
-    <a class="back-link" href="/">&larr; All albums</a>
+    <a class="back-link" href="/gallery.html">&larr; Όλες οι συλλογές</a>
     <h1 class="page-title"></h1>
     <div class="grid grid-media" id="grid">
-      <p class="muted">Loading…</p>
+      <p class="muted">Φόρτωση…</p>
     </div>
   `;
   app.querySelector('.page-title').textContent = album;
@@ -72,7 +73,7 @@ async function renderAlbum(app, album) {
   const data = await res.json();
   grid.innerHTML = '';
   if (!data.items?.length) {
-    grid.innerHTML = '<p class="empty">No media in this album yet.</p>';
+    grid.innerHTML = '<p class="empty">Η συλλογή είναι κενή.</p>';
     return;
   }
   // Expose items for the lightbox script.

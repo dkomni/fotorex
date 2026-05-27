@@ -12,7 +12,7 @@
     "deploy": "wrangler pages deploy public"
   },
   "devDependencies": {
-    "wrangler": "^3.80.0"
+    "wrangler": "^4.94.0"
   },
   "keywords": [
     "cloudflare",
