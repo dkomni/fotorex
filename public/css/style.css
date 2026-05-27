@@ -209,16 +209,7 @@ main { flex: 1 0 auto; }
 .nav-toggle svg { width: 24px; height: 24px; }
 
 @media (max-width: 768px) {
-  body.nav-open { overflow: hidden; }
   .nav-toggle { display: inline-flex; }
-  .nav-backdrop {
-    display: none;
-    position: fixed;
-    inset: 0;
-    background: rgba(0, 0, 0, 0.5);
-    z-index: 998;
-  }
-  .nav-backdrop.open { display: block; }
   .primary-nav {
     position: fixed;
     inset: var(--header-height) 0 0 0;
@@ -230,8 +221,6 @@ main { flex: 1 0 auto; }
     transform: translateX(100%);
     transition: transform var(--transition);
     box-shadow: var(--shadow-md);
-    z-index: 999;
-    overflow-y: auto;
   }
   .primary-nav.open { transform: translateX(0); }
   .primary-nav a {
