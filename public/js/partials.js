@@ -37,17 +37,40 @@ function highlightCurrentNav(root) {
 function wireMobileNav(root) {
   const toggle = root.querySelector('#nav-toggle');
   const nav = root.querySelector('#primary-nav');
+  const backdrop = root.querySelector('#nav-backdrop');
   if (!toggle || !nav) return;
+  
+  const closeNav = () => {
+    nav.classList.remove('open');
+    if (backdrop) backdrop.classList.remove('open');
+    toggle.setAttribute('aria-expanded', 'false');
+    document.body.classList.remove('nav-open');
+  };
+  
+  const openNav = () => {
+    nav.classList.add('open');
+    if (backdrop) backdrop.classList.add('open');
+    toggle.setAttribute('aria-expanded', 'true');
+    document.body.classList.add('nav-open');
+  };
+  
   toggle.addEventListener('click', () => {
-    const open = nav.classList.toggle('open');
-    toggle.setAttribute('aria-expanded', String(open));
+    const isOpen = nav.classList.contains('open');
+    if (isOpen) {
+      closeNav();
+    } else {
+      openNav();
+    }
   });
+  
+  // Close nav when backdrop is clicked
+  if (backdrop) {
+    backdrop.addEventListener('click', closeNav);
+  }
+  
   // Close the panel after a nav-link tap on mobile.
   nav.querySelectorAll('a').forEach((a) => {
-    a.addEventListener('click', () => {
-      nav.classList.remove('open');
-      toggle.setAttribute('aria-expanded', 'false');
-    });
+    a.addEventListener('click', closeNav);
   });
 }
 
