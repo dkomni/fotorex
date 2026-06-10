@@ -35,3 +35,6 @@ npm-debug.log*
 
 # Cloudflare
 wrangler.toml.local
+
+# Dev notes
+DEV.md

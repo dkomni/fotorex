@@ -143,7 +143,6 @@ fotorex/
 ├── wrangler.toml
 ├── package.json
 ├── fotorex-plan.md             # Architecture & decisions
-├── CLIENT-GUIDE.md             # End-user instructions
 └── README.md
 ```
 
@@ -181,20 +180,6 @@ together with the static assets.
 
 ---
 
-## Client handoff
-
-When you're ready to hand over the account:
-
-1. **Add the client's payment card** in Cloudflare → Manage Account → Billing.
-2. **Set their card as default**, then remove yours.
-3. Set a billing notification (Billing → Notifications, e.g. \$1) so any
-   unexpected charge produces an email immediately.
-4. Hand over the account email + password, and the `UPLOAD_PASSWORD` you set.
-5. Suggest they rotate `UPLOAD_PASSWORD` (and create a fresh R2 API token)
-   so you no longer have admin access.
-
----
-
 ## Notes & limits
 
 - **R2 free tier**: 10 GB storage included, zero egress fees. Beyond 10 GB:
@@ -206,8 +191,6 @@ When you're ready to hand over the account:
 - **EXIF metadata** in originals is **not** stripped. Client-generated
   thumbnails are re-encoded so they don't contain EXIF GPS data.
 - **No delete UI for individual albums on the public site** — admin only.
-
-For client-facing instructions, see [CLIENT-GUIDE.md](CLIENT-GUIDE.md).
 
 ---
 

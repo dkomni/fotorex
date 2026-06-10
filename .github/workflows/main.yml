@@ -4,20 +4,35 @@ on:
   pull_request:
     branches: [main]
 
+# Note: real merge gating (require PR, require approval from CODEOWNERS,
+# restrict who can push, block force-push) is enforced by branch protection
+# on `main`, NOT by this workflow. Configure it in
+# GitHub → Settings → Branches → main. This job only validates the project.
+
+permissions:
+  contents: read
+
 jobs:
   checks:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
 
-      - name: Placeholder for linting/tests
-        run: echo "Add linting and tests here"
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
 
-  require-review:
-    runs-on: ubuntu-latest
-    if: github.event.pull_request.base.ref == 'main'
-    steps:
-      - name: Enforce review requirement
+      - name: Install dependencies
+        run: npm install --no-audit --no-fund
+
+      - name: Validate Wrangler config and Functions build
+        run: npx wrangler pages functions build --outdir=.wrangler-ci-build
+
+      - name: Guard against committed secrets
         run: |
-          echo "Pull requests to main require at least one approval before merge."
-          echo "Configure branch protection rules in Settings → Branches → main"
+          if git ls-files | grep -E '(^|/)\.dev\.vars$|(^|/)\.env$'; then
+            echo "::error::A secret file (.dev.vars/.env) is tracked by git. Remove it."
+            exit 1
+          fi
+          echo "No tracked secret files found."

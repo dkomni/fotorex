@@ -1,0 +1,10 @@
+# Code owners for fotorex.
+#
+# Every change to any file requires review/approval from @dkomni.
+# Enforced only when branch protection on `main` has
+# "Require review from Code Owners" enabled (set manually in
+# GitHub → Settings → Branches → main).
+#
+# The last matching pattern wins, so this single catch-all covers everything.
+
+* @dkomni
