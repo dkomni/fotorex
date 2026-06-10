@@ -38,16 +38,17 @@ function wireMobileNav(root) {
   const toggle = root.querySelector('#nav-toggle');
   const nav = root.querySelector('#primary-nav');
   if (!toggle || !nav) return;
-  toggle.addEventListener('click', () => {
-    const open = nav.classList.toggle('open');
+  const setOpen = (open) => {
+    nav.classList.toggle('open', open);
+    document.body.classList.toggle('nav-open', open);
     toggle.setAttribute('aria-expanded', String(open));
+  };
+  toggle.addEventListener('click', () => {
+    setOpen(!nav.classList.contains('open'));
   });
   // Close the panel after a nav-link tap on mobile.
   nav.querySelectorAll('a').forEach((a) => {
-    a.addEventListener('click', () => {
-      nav.classList.remove('open');
-      toggle.setAttribute('aria-expanded', 'false');
-    });
+    a.addEventListener('click', () => setOpen(false));
   });
 }
 
