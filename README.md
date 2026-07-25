@@ -8,7 +8,7 @@ password-protected so the client manages all media without developer help.
 - **Storage**: Cloudflare R2 bucket `fotorex-media`
 - **Frontend**: Vanilla HTML/CSS/JS (no build step)
 - **API**: Cloudflare Pages Functions (`functions/api/*.js`)
-- **URL** (until a custom domain is added): `https://fotorex.pages.dev`
+- **URL** (until a custom domain is added): `https://foto-rex.com`
 
 ---
 
