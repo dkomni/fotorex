@@ -8,6 +8,7 @@
 
 import { requirePassword, jsonResponse } from '../_shared/auth.js';
 import { presignR2PutUrl } from '../_shared/r2-presign.js';
+import { sanitizeAlbumName, sanitizeFilename } from '../_shared/sanitize.js';
 
 const BUCKET_NAME = 'fotorex-media';
 const EXPIRES_SECONDS = 600;
@@ -38,7 +39,7 @@ export async function onRequestPost({ request, env }) {
     );
   }
 
-  const safeAlbum = sanitizeSegment(album);
+  const safeAlbum = sanitizeAlbumName(album);
   const safeFile = sanitizeFilename(filename);
   const safeKind = kind === 'thumb' ? 'thumb' : 'original';
   if (!safeAlbum || !safeFile) {
@@ -57,11 +58,4 @@ export async function onRequestPost({ request, env }) {
   });
 
   return jsonResponse({ url, key, contentType, expiresIn: EXPIRES_SECONDS });
-}
-
-function sanitizeSegment(s) {
-  return String(s).replace(/[^a-zA-Z0-9._-]/g, '').slice(0, 64);
-}
-function sanitizeFilename(s) {
-  return String(s).replace(/[^a-zA-Z0-9._-]/g, '').slice(0, 200);
 }

@@ -5,7 +5,6 @@ Static photo & video gallery for the Greek photography studio **ΦΩΤΟ REX**, 
 For end-to-end project context, prefer the existing docs:
 
 - [README.md](README.md) — Cloudflare setup, env vars, R2 token, project layout, endpoints, content-editing guide
-- [fotorex-plan.md](fotorex-plan.md) — original architecture & decisions
 
 ## Stack snapshot
 

@@ -6,6 +6,7 @@
 // /api/upload-url (presigned PUT to R2 directly).
 
 import { requirePassword, jsonResponse } from '../_shared/auth.js';
+import { sanitizeAlbumName, sanitizeFilename } from '../_shared/sanitize.js';
 
 const MAX_VIA_FUNCTION = 95 * 1024 * 1024;
 const ALLOWED_PREFIXES = ['image/', 'video/'];
@@ -15,7 +16,7 @@ export async function onRequestPost({ request, env }) {
   if (authFail) return authFail;
 
   const url = new URL(request.url);
-  const album = sanitizeSegment(url.searchParams.get('album') || '');
+  const album = sanitizeAlbumName(url.searchParams.get('album') || '');
   const filename = sanitizeFilename(url.searchParams.get('filename') || '');
   const kind = url.searchParams.get('kind') === 'thumb' ? 'thumb' : 'original';
   if (!album || !filename) {
@@ -47,12 +48,4 @@ export async function onRequestPost({ request, env }) {
   });
 
   return jsonResponse({ key });
-}
-
-function sanitizeSegment(s) {
-  return String(s).replace(/[^a-zA-Z0-9._-]/g, '').slice(0, 64);
-}
-
-function sanitizeFilename(s) {
-  return String(s).replace(/[^a-zA-Z0-9._-]/g, '').slice(0, 200);
 }

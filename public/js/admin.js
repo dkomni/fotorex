@@ -13,6 +13,9 @@ const PASSWORD_KEY = 'fotorex_pw';
 const PRESIGN_THRESHOLD = 95 * 1024 * 1024;
 const THUMB_MAX = 400;
 const SAFE_NAME = /[^a-zA-Z0-9._-]/g;
+// Mirrors functions/_shared/sanitize.js sanitizeAlbumName: album names may
+// contain Greek/Latin letters, digits, spaces and light punctuation.
+const ALBUM_DISALLOWED = /[^\p{L}\p{N} _.,()'-]/gu;
 
 const app = document.getElementById('app');
 
@@ -176,12 +179,17 @@ function getSelectedAlbum() {
   const newInput = document.getElementById('album-new');
   const sel = document.getElementById('album-select');
   const raw = (!newInput.hidden ? newInput.value : sel.value).trim();
-  return raw
-    .replace(/\s+/g, '-')
-    .replace(SAFE_NAME, '-')
-    .replace(/-+/g, '-')
-    .replace(/^-|-$/g, '')
-    .slice(0, 64);
+  return sanitizeAlbumName(raw);
+}
+
+function sanitizeAlbumName(raw) {
+  const cleaned = String(raw)
+    .normalize('NFC')
+    .replace(ALBUM_DISALLOWED, '')
+    .replace(/\s+/g, ' ')
+    .trim()
+    .slice(0, 80);
+  return /^\.+$/.test(cleaned) ? '' : cleaned;
 }
 
 async function handleFiles(files) {
@@ -356,12 +364,32 @@ async function renderManagePanel() {
     section.innerHTML = `
       <summary>
         <span class="album-name"></span>
+        <button class="link-btn" type="button" data-action="rename-album">Μετονομασία</button>
         <button class="danger" type="button" data-action="delete-album">Διαγραφή συλλογής</button>
       </summary>
       <div class="album-items"><p class="muted">Φόρτωση…</p></div>
     `;
     section.querySelector('.album-name').textContent = a.name;
     list.append(section);
+
+    section.querySelector('button.link-btn').addEventListener('click', async (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      const input = prompt(`Νέο όνομα για τη συλλογή «${a.name}»:`, a.name);
+      if (input === null) return;
+      const newName = sanitizeAlbumName(input);
+      if (!newName) {
+        alert('Μη έγκυρο όνομα συλλογής.');
+        return;
+      }
+      if (newName === a.name) return;
+      const result = await renameAlbum(a.name, newName);
+      if (result.ok) {
+        renderManagePanel();
+      } else {
+        alert(result.error || 'Η μετονομασία απέτυχε.');
+      }
+    });
 
     section.querySelector('button.danger').addEventListener('click', async (e) => {
       e.preventDefault();
@@ -444,6 +472,17 @@ async function deleteAlbum(name) {
     body: JSON.stringify({ album: name }),
   });
   return r.ok;
+}
+
+async function renameAlbum(from, to) {
+  const r = await fetch('/api/rename', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', 'X-Upload-Password': getPassword() },
+    body: JSON.stringify({ from, to }),
+  });
+  if (r.ok) return { ok: true };
+  const data = await safeJson(r);
+  return { ok: false, error: data?.error };
 }
 
 /* ---------------- utils ---------------- */
