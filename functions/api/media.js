@@ -4,6 +4,8 @@
 //
 // Response: 200 { album, total, items: [{ key, name, size, contentType, type, thumbKey, uploaded }] }
 
+import { sanitizeAlbumName } from '../_shared/sanitize.js';
+
 const CT_BY_EXT = {
   jpg: 'image/jpeg', jpeg: 'image/jpeg', png: 'image/png', gif: 'image/gif',
   webp: 'image/webp', avif: 'image/avif', heic: 'image/heic', heif: 'image/heif',
@@ -13,7 +15,7 @@ const CT_BY_EXT = {
 export async function onRequestGet({ request, env }) {
   const url = new URL(request.url);
   const albumParam = url.searchParams.get('album') || '';
-  const album = sanitizeAlbum(albumParam);
+  const album = sanitizeAlbumName(albumParam);
   if (!album) return json({ error: 'album required' }, 400);
 
   const bucket = env.MEDIA_BUCKET;
@@ -46,10 +48,6 @@ export async function onRequestGet({ request, env }) {
   // Newest first.
   items.sort((a, b) => new Date(b.uploaded) - new Date(a.uploaded));
   return json({ album, total: items.length, items }, 200, { 'Cache-Control': 'no-cache' });
-}
-
-function sanitizeAlbum(s) {
-  return String(s).replace(/[^a-zA-Z0-9._-]/g, '').slice(0, 64);
 }
 
 function guessContentType(name) {

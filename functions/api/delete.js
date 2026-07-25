@@ -9,8 +9,12 @@
 // Also used as a cheap auth probe by admin.js: POST { keys: [] } returns 200.
 
 import { requirePassword, jsonResponse } from '../_shared/auth.js';
+import { sanitizeAlbumName } from '../_shared/sanitize.js';
 
-const KEY_RE = /^(original|thumb)\/[a-zA-Z0-9._-]+\/[a-zA-Z0-9._-]+$/;
+// Album segment allows any non-slash characters (Greek/Latin letters, spaces,
+// etc. per sanitizeAlbumName); the filename segment stays ASCII-safe since
+// it's always produced by sanitizeFilename at upload time.
+const KEY_RE = /^(original|thumb)\/[^/]+\/[a-zA-Z0-9._-]+$/;
 
 export async function onRequestPost({ request, env }) {
   const authFail = await requirePassword(request, env);
@@ -29,7 +33,7 @@ export async function onRequestPost({ request, env }) {
   const toDelete = new Set();
 
   if (typeof body?.album === 'string' && body.album) {
-    const safe = body.album.replace(/[^a-zA-Z0-9._-]/g, '');
+    const safe = sanitizeAlbumName(body.album);
     if (!safe) return jsonResponse({ error: 'invalid album' }, 400);
     for (const prefix of [`original/${safe}/`, `thumb/${safe}/`]) {
       let cursor;
